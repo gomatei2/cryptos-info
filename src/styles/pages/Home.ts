@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import { lighten } from 'polished';
 
 export const Container = styled.div`
   display: flex;
@@ -33,8 +32,8 @@ export const Content = styled.main`
         outline: 0;
         background: linear-gradient(
           -90deg,
-          ${props => props.theme.colors.background},
-          ${props => lighten(0.0, props.theme.colors.primary)}
+          ${({ theme }) => theme.colors.background},
+          ${({ theme }) => theme.colors.primary}
         );
         color: ${({ theme }) => theme.colors.textLight};
         font-weight: 700;

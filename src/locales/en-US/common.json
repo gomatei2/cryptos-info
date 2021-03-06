@@ -1,0 +1,11 @@
+{
+  "title": "Cryptocurrency values ​​today",
+  "pt-BR": "Portuguese",
+  "en-US": "English",
+  "currency": "USD",
+  "view-title": "Click to view",
+  "price-title": "Price",
+  "day-variation-title": "Day variation",
+  "volume-title": "Volume",
+  "last-update": "Last update: {{date}}."
+}
