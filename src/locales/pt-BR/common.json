@@ -1,0 +1,11 @@
+{
+  "title": "Valores de criptomoedas hoje",
+  "pt-BR": "Português",
+  "en-US": "Inglês",
+  "currency": "BRL",
+  "view-title": "Clique para visualizar",
+  "price-title": "Valor",
+  "day-variation-title": "Variação dia",
+  "volume-title": "Volume",
+  "last-update": "Última atualização: {{date}}."
+}

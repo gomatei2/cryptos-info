@@ -1,8 +1,8 @@
 import { ChangeEvent, useEffect, useState } from 'react';
-import Head from 'next/head';
-import useFetch from '@/hooks/useFetch';
-import Coin from '@/component/Coin';
-import CryptoCard from '@/component/CryptoCard';
+import { GetStaticProps } from 'next';
+import useTranslation from 'next-translate/useTranslation';
+import Coin from '@/components/Coin';
+import CryptoCard from '@/components/CryptoCard';
 
 import { Container, Content } from '@/styles/pages/Home';
 
@@ -17,16 +17,18 @@ interface CoinDTO {
   last_updated: Date;
 }
 
-export default function Home() {
+interface Props {
+  data: CoinDTO[];
+}
+
+const Home: React.FC<Props> = ({ data }) => {
+  const { t } = useTranslation();
+
   const [search, setSearch] = useState('');
   const [image, setImage] = useState('');
   const [cryptoName, setCryptoName] = useState('');
   const [price, setPrice] = useState(0);
   const [lastUpdate, setLastUpdate] = useState(new Date());
-
-  const { data } = useFetch<CoinDTO[]>(
-    'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=20&page=1&sparkline=false'
-  );
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value);
@@ -34,17 +36,14 @@ export default function Home() {
 
   useEffect(() => {
     if (data) {
-      const selectedCoin = data.find(coin => coin.name === 'Bitcoin');
+      const crypto = cryptoName || 'Bitcoin';
+      const selectedCoin = data.find(coin => coin.name === crypto);
       setImage(selectedCoin.image);
       setCryptoName(selectedCoin.name);
       setPrice(selectedCoin.current_price);
       setLastUpdate(selectedCoin.last_updated);
     }
-  }, [data]);
-
-  if (!data) {
-    return <p>Carregando...</p>;
-  }
+  }, [data, cryptoName]);
 
   const filteredCoins = data.filter(coin =>
     coin.name.toLowerCase().includes(search.toLowerCase())
@@ -60,16 +59,15 @@ export default function Home() {
 
   return (
     <Container>
-      <Head>
-        <title>Bitcoin hoje: Valor em Real e Dólar</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-
       <Content>
         <div>
-          <h1>Search</h1>
+          <h1>{t('home:search')}</h1>
           <form>
-            <input type="text" onChange={handleChange} placeholder="Search" />
+            <input
+              type="text"
+              onChange={handleChange}
+              placeholder={t('home:search')}
+            />
           </form>
         </div>
         <CryptoCard
@@ -93,4 +91,21 @@ export default function Home() {
       ))}
     </Container>
   );
-}
+};
+
+export const getStaticProps: GetStaticProps = async ({ locale }) => {
+  const currency = locale === 'pt-BR' ? 'BRL' : 'USD';
+  const response = await fetch(
+    `https://api.coingecko.com/api/v3/coins/markets?vs_currency=${currency}&order=market_cap_desc&per_page=20&page=1&sparkline=false`
+  );
+  const data = await response.json();
+
+  return {
+    props: {
+      data,
+    },
+    revalidate: 10,
+  };
+};
+
+export default Home;

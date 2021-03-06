@@ -7,46 +7,46 @@ interface PProps {
 export const Container = styled.div`
   display: flex;
   justify-content: center;
-}
 
-main {
-  display: flex;
-  flex-direction: row;
-  justify-content: start;
-  align-items: center;
-  height: 80px;
-  border-bottom: 1px solid ${({ theme }) => theme.colors.background};
-
-  button {
+  main {
     display: flex;
+    flex-direction: row;
+    justify-content: start;
     align-items: center;
-    text-align: left;
-    background: transparent;
-    border: 0;
-    outline: 0;
-    min-width: 400px;
+    height: 80px;
+    border-bottom: 1px solid ${({ theme }) => theme.colors.background};
 
-    img {
-      height: 30px;
-      width: 30px;
-      margin-right: 10px;
+    button {
+      display: flex;
+      align-items: center;
+      text-align: left;
+      background: transparent;
+      border: 0;
+      outline: 0;
+      min-width: 400px;
+
+      img {
+        height: 30px;
+        width: 30px;
+        margin-right: 10px;
+      }
+
+      h1 {
+        font-size: 16px;
+        width: 150px;
+      }
+
+      p {
+        text-transform: uppercase;
+      }
     }
 
-    h1 {
-      font-size: 16px;
-      width: 150px;
+    aside {
+      display: flex;
+      text-align: right;
+      justify-content: space-between;
+      width: 100%;
     }
-
-    p {
-      text-transform: uppercase;
-    }
-  }
-
-  aside {
-    display: flex;
-    text-align: right;
-    justify-content: space-between;
-    width: 100%;
   }
 `;
 

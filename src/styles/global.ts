@@ -10,10 +10,10 @@ export default createGlobalStyle`
 
   body {
     background: linear-gradient(
-    -90deg,
-    ${props => lighten(0.2, props.theme.colors.primary)},
-    ${props => props.theme.colors.background}
-  );
+      -90deg,
+      ${props => lighten(0.2, props.theme.colors.primary)},
+      ${props => props.theme.colors.background}
+    );
     color: ${({ theme }) => theme.colors.text};
   }
 
