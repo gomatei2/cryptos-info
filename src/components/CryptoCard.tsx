@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router';
 import useTranslation from 'next-translate/useTranslation';
 
-import { Container, Content } from '@/styles/components/BitcoinCard';
+import { Container, Content } from '@/styles/components/CryptoCard';
 
 interface CryptoCardProps {
   image: string;

@@ -35,11 +35,11 @@ export const Content = styled.main`
           ${({ theme }) => theme.colors.background},
           ${({ theme }) => theme.colors.primary}
         );
-        color: ${({ theme }) => theme.colors.textLight};
+        color: ${({ theme }) => theme.colors.input};
         font-weight: 700;
 
         &::placeholder {
-          color: ${({ theme }) => theme.colors.textLight};
+          color: ${({ theme }) => theme.colors.input};
           font-weight: normal;
         }
       }

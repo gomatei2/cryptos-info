@@ -1,10 +1,18 @@
+import { useContext } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import Switch from 'react-switch';
 import useTranslation from 'next-translate/useTranslation';
+import { ThemeContext } from 'styled-components';
 
 import { Container, Locale } from '@/styles/components/Header';
 
-const Header: React.FC = () => {
+interface Props {
+  toggleTheme(): void;
+}
+
+const Header: React.FC<Props> = ({ toggleTheme }) => {
+  const { colors, title } = useContext(ThemeContext);
   const router = useRouter();
   const { t } = useTranslation();
 
@@ -23,7 +31,17 @@ const Header: React.FC = () => {
           </Locale>
         ))}
       </aside>
-      <p>switcher</p>
+      <Switch
+        onChange={toggleTheme}
+        checked={title === 'dark'}
+        checkedIcon={false}
+        uncheckedIcon={false}
+        height={12}
+        width={40}
+        handleDiameter={20}
+        offColor={colors.primary}
+        onColor={colors.primary}
+      />
     </Container>
   );
 };
