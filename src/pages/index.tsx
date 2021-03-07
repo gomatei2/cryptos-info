@@ -134,7 +134,7 @@ export const getServerSideProps: GetServerSideProps = async context => {
 
   return {
     props: {
-      storageTheme: JSON.parse(theme),
+      storageTheme: theme ? JSON.parse(theme) : null,
     },
   };
 };
