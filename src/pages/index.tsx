@@ -1,10 +1,16 @@
 import { ChangeEvent, useEffect, useState } from 'react';
-import { GetStaticProps } from 'next';
+import { GetServerSideProps } from 'next';
+import Cookies from 'js-cookie';
 import useTranslation from 'next-translate/useTranslation';
+import { ThemeProvider } from 'styled-components';
+import Header from '@/components/Header';
 import Coin from '@/components/Coin';
 import CryptoCard from '@/components/CryptoCard';
 
+import GlobalStyle from '@/styles/global';
 import { Container, Content } from '@/styles/pages/Home';
+import dark from '@/styles/themes/dark';
+import light from '@/styles/themes/light';
 
 interface CoinDTO {
   id: string;
@@ -17,14 +23,17 @@ interface CoinDTO {
   last_updated: Date;
 }
 
-interface Props {
-  data: CoinDTO[];
+interface HomeProps {
+  storageTheme: typeof light;
 }
 
-const Home: React.FC<Props> = ({ data }) => {
+const Home: React.FC<HomeProps> = ({ storageTheme }) => {
   const { t } = useTranslation();
+  const [theme, setTheme] = useState(storageTheme ?? light);
 
+  const [data, setData] = useState<CoinDTO[]>([]);
   const [search, setSearch] = useState('');
+
   const [image, setImage] = useState('');
   const [cryptoName, setCryptoName] = useState('');
   const [price, setPrice] = useState(0);
@@ -35,7 +44,21 @@ const Home: React.FC<Props> = ({ data }) => {
   };
 
   useEffect(() => {
-    if (data) {
+    Cookies.set('theme', JSON.stringify(theme));
+  }, [theme]);
+
+  useEffect(() => {
+    fetch(
+      `https://api.coingecko.com/api/v3/coins/markets?vs_currency=${t(
+        'common:currency'
+      )}&order=market_cap_desc&per_page=20&page=1&sparkline=false`
+    ).then(response =>
+      response.json().then(responseData => setData(responseData))
+    );
+  }, [t]);
+
+  useEffect(() => {
+    if (data.length > 0) {
       const crypto = cryptoName || 'Bitcoin';
       const selectedCoin = data.find(coin => coin.name === crypto);
       setImage(selectedCoin.image);
@@ -57,54 +80,62 @@ const Home: React.FC<Props> = ({ data }) => {
     setLastUpdate(selectedCoin.last_updated);
   };
 
+  const toggleTheme = () => {
+    setTheme(theme.title === 'light' ? dark : light);
+  };
+
+  // TODO
+  if (data.length === 0) {
+    return <div />;
+  }
+
   return (
-    <Container>
-      <Content>
-        <div>
-          <h1>{t('home:search')}</h1>
-          <form>
-            <input
-              type="text"
-              onChange={handleChange}
-              placeholder={t('home:search')}
-            />
-          </form>
-        </div>
-        <CryptoCard
-          image={image}
-          name={cryptoName}
-          price={price}
-          lastUpdate={lastUpdate}
-        />
-      </Content>
-      {filteredCoins.map(coin => (
-        <Coin
-          key={coin.id}
-          name={coin.name}
-          price={coin.current_price}
-          symbol={coin.symbol}
-          volume={coin.total_volume}
-          image={coin.image}
-          priceChange={coin.price_change_percentage_24h}
-          setSelectedCoin={setSelectedCoin}
-        />
-      ))}
-    </Container>
+    <ThemeProvider theme={theme}>
+      <Header toggleTheme={toggleTheme} />
+      <Container>
+        <Content>
+          <div>
+            <h1>{t('home:search')}</h1>
+            <form>
+              <input
+                type="text"
+                onChange={handleChange}
+                placeholder={t('home:search')}
+              />
+            </form>
+          </div>
+          <CryptoCard
+            image={image}
+            name={cryptoName}
+            price={price}
+            lastUpdate={lastUpdate}
+          />
+        </Content>
+        {filteredCoins.map(coin => (
+          <Coin
+            key={coin.id}
+            name={coin.name}
+            price={coin.current_price}
+            symbol={coin.symbol}
+            volume={coin.total_volume}
+            image={coin.image}
+            priceChange={coin.price_change_percentage_24h}
+            setSelectedCoin={setSelectedCoin}
+          />
+        ))}
+      </Container>
+      <GlobalStyle />
+    </ThemeProvider>
   );
 };
 
-export const getStaticProps: GetStaticProps = async ({ locale }) => {
-  const currency = locale === 'pt-BR' ? 'BRL' : 'USD';
-  const response = await fetch(
-    `https://api.coingecko.com/api/v3/coins/markets?vs_currency=${currency}&order=market_cap_desc&per_page=20&page=1&sparkline=false`
-  );
-  const data = await response.json();
+export const getServerSideProps: GetServerSideProps = async context => {
+  const { theme } = context.req.cookies;
 
   return {
     props: {
-      data,
+      storageTheme: JSON.parse(theme),
     },
-    revalidate: 10,
   };
 };
 
