@@ -24,6 +24,7 @@ export const Container = styled.div`
       border: 0;
       outline: 0;
       min-width: 400px;
+      color: ${({ theme }) => theme.colors.text};
 
       img {
         height: 30px;

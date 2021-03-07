@@ -28,7 +28,7 @@ const Home: React.FC<Props> = ({ data }) => {
   const [image, setImage] = useState('');
   const [cryptoName, setCryptoName] = useState('');
   const [price, setPrice] = useState(0);
-  const [lastUpdate, setLastUpdate] = useState(new Date());
+  const [lastUpdate, setLastUpdate] = useState(null);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value);
