@@ -26,7 +26,7 @@ const CryptoCard: React.FC<CryptoCardProps> = ({
       <Content>
         <aside>
           <strong>{name}</strong>
-          <p>TI</p>
+          <p />
         </aside>
 
         <h1>
